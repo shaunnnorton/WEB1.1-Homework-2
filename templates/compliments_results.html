@@ -4,7 +4,19 @@
         <title>Compliments Results</title>
     </head>
     <body>
-        <!-- Your HTML code goes here! -->
+        Hello {{name}}!<br/>
+        {% if wants_comp == 'no' %}
+        <h6>You didnt want Any Compliments.</h6>
+        {% else %}
+        <h3>YOU ARE:</h3>
+        <ul>
+            {%for _ in range(0,num_comp)%}
+            <li>
+                {{compliments[_]}}
+            </li>
+            {% endfor %}
+        </ul>
+        {% endif %}
 
         
 

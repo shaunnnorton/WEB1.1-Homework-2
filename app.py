@@ -18,23 +18,13 @@ def homepage():
 @app.route('/froyo')
 def choose_froyo():
     """Shows a form to collect the user's Fro-Yo order."""
-    return """
-    <form action="/froyo_results" method="GET">
-        What is your favorite Fro-Yo flavor? <br/>
-        <input type="text" name="flavor"><br/>
-        What are your favorite toppings?<br/>
-        <input type="text" name="toppings"><br/>
-        <input type="submit" value="Submit!">
-
-    </form>
-    """
+    return render_template('froyo_form.html')
 
 @app.route('/froyo_results')
 def show_froyo_results():
     """Shows the user what they ordered from the previous page."""
-    users_froyo_flavor = request.args.get('flavor')
-    users_froyo_toppings = request.args.get("toppings")
-    return f'You ordered {users_froyo_flavor} flavored Fro-Yo with toppings {users_froyo_toppings}!'
+    context = {'users_froyo_flavor':request.args.get('flavor'),'users_froyo_toppings':request.args.get("toppings")}
+    return render_template('froyo_results.html',**context)
 
 @app.route('/favorites')
 def favorites():
@@ -83,29 +73,19 @@ def message_results():
 @app.route('/calculator')
 def calculator():
     """Shows the user a form to enter 2 numbers and an operation."""
-    return """
-    <form action="/calculator_results" method="GET">
-        Please enter 2 numbers and select an operator.<br/><br/>
-        <input type="number" name="operand1">
-        <select name="operation">
-            <option value="add">+</option>
-            <option value="subtract">-</option>
-            <option value="multiply">*</option>
-            <option value="divide">/</option>
-        </select>
-        <input type="number" name="operand2">
-        <input type="submit" value="Submit!">
-    </form>
-    """
+    return render_template("calculator_form.html")
 
 @app.route('/calculator_results')
 def calculator_results():
     """Shows the user the result of their calculation."""
+    
     operation = request.args.get('operation')
     num_1 = int(request.args.get('operand1'))
     num_2 = int(request.args.get('operand2'))
     operators = {'add':numpy.add(num_1,num_2),'subtract':numpy.subtract(num_1,num_2),'multiply':numpy.multiply(num_1,num_2),'divide':numpy.divide(num_1,num_2)}
-    return f"You chose to {operation} {num_1} and {num_2}. Your result is: {operators[operation]}"
+    context = {'operation':request.args.get('operation'),'num_1':int(request.args.get('operand1')),'num_2':int(request.args.get('operand2')),'total':operators[operation]}
+
+    return render_template("calculator_results.html",**context)
 
 # List of compliments to be used in the `compliments_results` route (feel free 
 # to add your own!) 
@@ -144,8 +124,19 @@ def compliments():
 @app.route('/compliments_results')
 def compliments_results():
     """Show the user some compliments."""
+    wants_comp = request.args.get('wants_compliments')
+    num_comp = int(request.args.get('num_compliments'))
+    compliments = random.sample(list_of_compliments,num_comp)
+      
+    
+    
+    
+    
     context = {
-        # TODO: Enter your context variables here.
+        'name':request.args.get('users_name'),
+        'wants_comp':wants_comp,
+        'num_comp':num_comp,
+        'compliments':compliments
     }
 
     return render_template('compliments_results.html', **context)
